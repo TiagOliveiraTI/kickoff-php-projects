@@ -1,4 +1,4 @@
-FROM php:8.1-fpm
+FROM php:8.0-fpm
 
 ARG uid
 ARG user
@@ -20,13 +20,17 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     nodejs \
-    graphviz
+    graphviz \
+    fswatch \
+    ufw
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
     &&  docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pgsql mysqli pdo_pgsql pdo_mysql mbstring zip exif pcntl gd ldap 
+
+RUN ufw allow 9003
 
 RUN pecl install -o -f xdebug \
     &&  rm -rf /tmp/pear \
@@ -35,6 +39,10 @@ RUN pecl install -o -f xdebug \
 RUN useradd -G root -u $uid -d /home/$user $user
 
 WORKDIR /var/www
+
+RUN mkdir -p /home/$user/.composer
+
+RUN chown -R $user /home/$user/.composer
 
 USER $user
 

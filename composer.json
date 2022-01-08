@@ -3,6 +3,11 @@
     "description": "Use this boilerplate to start your php projects",
     "type": "project",
     "license": "MIT",
+    "scripts": {
+        "test": "./vendor/bin/pest",
+        "test:coverage": "XDEBUG_MODE=coverage ./vendor/bin/pest --coverage",
+        "test:watch": "./vendor/bin/phpunit-watcher watch"
+    },
     "autoload": {
         "psr-4": {
             "Tiagoliveirati\\KickoffPhpProjects\\": "src/"
@@ -14,5 +19,16 @@
             "email": "dev.tiago.oliveira@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^1.21",
+        "spatie/phpunit-watcher": "^1.23"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
 }
