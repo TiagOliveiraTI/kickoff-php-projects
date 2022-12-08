@@ -21,7 +21,8 @@
         }
     ],
     "require": {
-        "php": ">=8.0"
+        "php": ">=8.0",
+        "symfony/dotenv": "^6.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.6",

@@ -1,9 +1,25 @@
 version: '3.8'
 
 services:
-  app:
+  nginx:
+    image: nginx:1.17-alpine
+    container_name: kickoff-nginx
+    restart: unless-stopped
+    links:  
+      - php
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./devops/nginx:/etc/nginx/conf.d
+    depends_on:
+      - php
+  
+  php:
     stdin_open: true
-    tty: true 
+    tty: true
+    expose:  
+      - 9003
     build:
       context: ./
       dockerfile: Dockerfile
@@ -17,21 +33,27 @@ services:
     volumes: 
       - ./:/var/www
       - ./devops/php:/usr/local/etc/php/conf.d
-    networks:
-      - kickoff-php
-  
-  nginx:
-    image: nginx:1.17-alpine
-    container_name: kickoff-nginx
-    restart: unless-stopped
-    ports:
-      - 8000:80
-    volumes:
-      - ./:/var/www
-      - ./devops/nginx:/etc/nginx/conf.d
-    networks:
-      - kickoff-php
+    links:
+      - mysql
+    depends_on:
+      - mysql
 
-networks:
-  kickoff-php:
-    driver: bridge
+  mysql:    
+    image: mysql:5.7  
+    container_name: kickoff-mysql-container  
+    volumes_from:  
+      - mysql-data
+    environment:  
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  
+      MYSQL_DATABASE: ${MYSQL_DATABASE}   
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 3306:3306
+
+  mysql-data:    
+    image: mysql:5.7  
+    container_name: kickoff-mysql-data-container  
+    volumes:  
+      - /var/lib/mysql  
+    command: "true"
