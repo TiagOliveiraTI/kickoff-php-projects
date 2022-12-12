@@ -10,7 +10,7 @@ PDOException;
 
 use Tiagoliveirati\KickoffPhpProjects\Utils\Config;
 
-class Connect
+class Instance
 {
     private const OPTIONS = [
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
