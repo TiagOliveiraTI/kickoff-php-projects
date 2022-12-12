@@ -12,7 +12,6 @@ use Tiagoliveirati\KickoffPhpProjects\Utils\Config;
 
 class Connect
 {
-    private Config $config;
     private const OPTIONS = [
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -22,9 +21,8 @@ class Connect
 
     private PDO $instance;
 
-    public function __construct()
+    public function __construct(private Config $config)
     {
-        $this->config = new Config();
     }
 
     /**
