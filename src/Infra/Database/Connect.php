@@ -6,18 +6,13 @@ namespace Tiagoliveirati\KickoffPhpProjects\Infra\Database;
 
 use PDO,
 
-\PDOException;
-use Symfony\Component\Dotenv\Dotenv;
+PDOException;
 
+use Tiagoliveirati\KickoffPhpProjects\Utils\Config;
 
 class Connect
 {
-    private Dotenv $dotenv;
-    private const HOST = 'kickoff-mysql-container';
-    private const USER = 'otaodev';
-    private const DATABASE = 'kickoff_db';
-    private const PASSWORD = '456123';
-
+    private Config $config;
     private const OPTIONS = [
         PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -25,23 +20,28 @@ class Connect
         PDO::ATTR_CASE => PDO::CASE_NATURAL
     ];
 
-    private static $instance;
+    private PDO $instance;
+
+    public function __construct()
+    {
+        $this->config = new Config();
+    }
 
     /**
      * Get the value of instance
      *
      * @return PDO
      */
-    public static function getInstance()
+    public function getInstance()
     {
-        $dsn = "mysql:host=" . self::HOST . ";dbname=" . self::DATABASE;
+        $dsn = "mysql:host=" . $this->config->getHost() . ";dbname=" . $this->config->getDatabase();
 
         if (empty(self::$instance)) {
             try {
-                self::$instance = new PDO(
+                $this->instance = new PDO(
                     $dsn,
-                    self::USER,
-                    self::PASSWORD,
+                    $this->config->getUser(),
+                    $this->config->getPass(),
                     self::OPTIONS
                 );
             } catch (PDOException $exception) {
@@ -49,14 +49,9 @@ class Connect
             }
         }
 
-        return self::$instance;
+        return $this->instance;
     }
 
-    private function __construct()
-    {
-        $this->dotenv = new Dotenv();
-        $this->dotenv->load(dirname(__DIR__, 3));
-    }
 
     private function __clone()
     {
