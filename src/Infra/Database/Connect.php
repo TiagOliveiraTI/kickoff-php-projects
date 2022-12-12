@@ -30,9 +30,9 @@ class Connect
     /**
      * Get the value of instance
      *
-     * @return PDO
+     * @return PDO|PDOException
      */
-    public function getInstance()
+    public function getInstance(): PDO|PDOException
     {
         $dsn = "mysql:host=" . $this->config->getHost() . ";dbname=" . $this->config->getDatabase();
 
@@ -45,7 +45,7 @@ class Connect
                     self::OPTIONS
                 );
             } catch (PDOException $exception) {
-                return $exception->getMessage();
+                return $exception;
             }
         }
 
